@@ -14,9 +14,9 @@ CREATE PROCEDURE dbo.insert_albart
 
 	
 	@albumname		nvarchar(100)
-	,@artistname	nvarchar(100)
-	,@artistcountry	nvarchar(100)
-	,@artistyear	int				
+	,@artistname		nvarchar(100)
+	,@artistcountry		nvarchar(100)
+	,@artistyear		int				
 	,@albumyear		int
 	,@genre			nvarchar(50)
 	,@style			nvarchar(50)
@@ -60,9 +60,9 @@ BEGIN
 
 	ELSE
 
-	DECLARE @genreid AS int
-	DECLARE @styleid AS int
-	DECLARE @artistid AS int
+	DECLARE @genreid	int
+	DECLARE @styleid 	int
+	DECLARE @artistid 	int
 	DECLARE @newgenre	nvarchar(200)
 	DECLARE @newstyle	nvarchar(200)
 	DECLARE @newartist	nvarchar(200)
