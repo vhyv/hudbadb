@@ -2,7 +2,7 @@
 			
 			Datum: 2018-02-01
 
-			Co: Vlozeni stylu k albu s umelcem.
+			Co: Vložení stylu k albu s umìlcem.
 
 			Autor: vhyv
 */
@@ -13,15 +13,19 @@ GO
 CREATE PROCEDURE dbo.insert_style
 		
 		@stylename		nvarchar(50)
-		,@artistname		nvarchar(100)
+		,@artistname	nvarchar(100)
 		,@albumname		nvarchar(100)
 
 AS
 BEGIN
 	
+	SET NOCOUNT ON
+
 	DECLARE @styleid	int
 	DECLARE @artistid	int
 	DECLARE @albumid	int
+	DECLARE @stringnull	nvarchar(100)
+	DECLARE @stringstyle	nvarchar(100)
 
 	SET @artistid = (SELECT art_id
 					FROM artist_info
@@ -31,6 +35,10 @@ BEGIN
 					FROM album_info
 					WHERE art_id = @artistid
 					AND alb_name = @albumname)
+
+	SET @stringnull = CONCAT('The NULL value was replaced with ', CONVERT(nvarchar(50), @stylename), '.')
+
+	SET @stringstyle = CONCAT('A new style (', CONVERT(nvarchar(50), @stylename), ') was inserted.')
 	
 	
 	IF NOT EXISTS (SELECT style_name
@@ -39,7 +47,7 @@ BEGIN
 	BEGIN
 		INSERT INTO style_info(style_name)
 		VALUES (@stylename)
-		RAISERROR ('A new style was inserted', 0, 1) WITH NOWAIT
+		RAISERROR (@stringstyle, 0, 1) WITH NOWAIT
 	END
 	
 	SET @styleid = (SELECT style_id
@@ -64,7 +72,7 @@ BEGIN
 		WHERE al.alb_id = @albumid
 			AND ar.art_id = @artistid
 
-		RAISERROR('The NULL style was replaced.', 0, 1) WITH NOWAIT
+		RAISERROR(@stringnull, 0, 1) WITH NOWAIT
 	END
 
 	ELSE
