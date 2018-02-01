@@ -1,9 +1,9 @@
 /*			Name: dbo.insert_style
 			
-			Datum: 2018-02-01
+			Date: 2018-02-01
 
-			Co: Vložení stylu k albu s umìlcem.
-
+			Co: Vlozeni stylu k albu s umelcem.
+			
 			Autor: vhyv
 */
 
