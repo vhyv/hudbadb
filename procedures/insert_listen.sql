@@ -23,6 +23,8 @@ CREATE PROCEDURE dbo.insert_listen
 AS
 BEGIN
 
+	SET NOCOUNT ON
+
 	DECLARE @artistid	int
 	DECLARE @albumid	int
 	DECLARE @datum		date
