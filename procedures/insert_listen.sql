@@ -26,6 +26,12 @@ BEGIN
 	DECLARE @artistid	int
 	DECLARE @albumid	int
 	DECLARE @datum		date
+	DECLARE @updatedrating	nvarchar(100)
+	DECLARE @insertedstuff	nvarchar(200)
+
+	SET @updatedrating = CONCAT('The rating was updated to ', CONVERT(nvarchar(50), @rating), '.')
+
+	SET @insertedstuff = CONCAT('The listening data of ', @albumname, ' by ', @artistname, ' was inserted. The rating is ', @rating, '/10.')
 
 	IF @rating > 10.0 OR @rating < 0.0 
 	BEGIN
@@ -55,7 +61,8 @@ BEGIN
 		UPDATE listening_history
 		SET rating = @rating, ldate = @datum, fav_song = @favs
 		WHERE alb_id = @albumid
-		RAISERROR('Rating was updated.', 0, 1) WITH NOWAIT 
+
+		RAISERROR(@updatedrating, 0, 1) WITH NOWAIT 
 	END
 
 	IF NOT EXISTS
@@ -66,7 +73,7 @@ BEGIN
 	BEGIN
 		INSERT INTO listening_history (ldate, alb_id, rating, fav_song)
 		VALUES (@datum, @albumid, @rating, @favs)
-		RAISERROR('Album and rating were inserted.', 0, 1) WITH NOWAIT
+		RAISERROR(@insertedstuff, 0, 1) WITH NOWAIT
 	END
 
 	ELSE
