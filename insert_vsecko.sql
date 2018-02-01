@@ -1,19 +1,17 @@
-/*  Název: dbo.insert_vsetko
+/*  	Name: dbo.insert_vsetko
 	
-	Databáze: hudba
+	DB: hudba
 
-	Úkol: Vloení nového alba do databáze na základì vloenıch hodnot.
-		  Pøípadné vloení nového umìlce/ánru/stylu.
-		  Pokud bylo slyšeno, pøidáme i datum a 
+	Co: Vlozeni noveho alba do databaze na zaklade vlozenych hodnot.
+	    Pripadne vlozeni noveho umelce/zanru/stylu 
+	    Pokud bylo slyseno, pridame i datum a rating etc. 
 	
-	Datum: 5. 1. 2018
+	Date: 5. 1. 2018
 	
 	Autor: vhyv
 	
-	Spouštìní: V celku
-	
-	Neopravené problémy: Dost mono nejde vloit album + artist bez vloení listening history.
-			Doèasné øešení - rating  0 - taková alba oznaèená jako k poslechu (potøeba potom s ratingem upravit i datum).
+	Problems: Dost mozno nejde vlozit album + artist bez vlozeni listening history.
+			Docasne reseni - rating  0 - takova alba oznacena jako k poslechu (potreba potom s ratingem upravit i datum).
 */
 
 USE hudba;
@@ -21,10 +19,10 @@ GO
 
 CREATE PROCEDURE dbo.insert_vsetko
 
--- Vloení všech nutnıch hodnot
-	-- Pokud existuje artist, není tøeba specifikovat @artistyear 
-	-- Artistcountry specifikujeme, a se vyhneme duplikátùm
-	-- Release: LP/EP/Comp, pøípadnì Mix
+-- Vlozeni vsech nutnych hodnot
+	-- Pokud existuje artist, neni treba specifikovat @artistyear 
+	-- Artistcountry specifikujeme, at se vyhneme duplikatum
+	-- Release: LP/EP/Comp, pripadne Mix (//mixtape)
 
 	@albumname		nvarchar(100),
 	@artistname		nvarchar(100),
@@ -89,7 +87,7 @@ BEGIN
 	END
 	
 	ELSE
--- Deklarujeme promìnné - všechna potøebná id a dnešní datum.
+-- Deklarujeme promenne - vsechna potrebna id a dnesni datum.
 
 	DECLARE @genreid AS int
 	DECLARE @styleid AS int
@@ -97,11 +95,11 @@ BEGIN
 	DECLARE @albumid AS int
 	DECLARE @den AS date
 
--- Datum poslechu je dnešek, protoe proè ne.
+-- Datum poslechu je dnesek, protoze proc ne.
 
 	SET @den = CAST(GETDATE() AS date)
 
--- Pokud neexistují, vloíme novı ánr nebo styl do pøísluného tejblu.
+-- Pokud neexistuji, vlozime novy zanrd nebo styl do prislusneho tejblu. 
 
 	IF NOT EXISTS (SELECT genre_name
 					 FROM genre_info
@@ -124,7 +122,7 @@ BEGIN
 	SET @genreid = (SELECT genre_id FROM genre_info WHERE genre_name = @genre)
 	SET @styleid = (SELECT style_id FROM style_info WHERE style_name = @style)
 	
--- Pokud neexistuje, pøidáme pøíslušného umìlce a jeho zemi a rok, kdy zaèal pùsobit
+-- Pokud neexistuje, pridame prislusneho umelce a jeho zemi a rok, kdy zacal pusobit.
 
 	IF NOT EXISTS
 		(SELECT art_name, art_country 
@@ -136,11 +134,11 @@ BEGIN
 		INSERT INTO artist_info(art_name, art_country, art_year)
 		VALUES (@artistname, @artistcountry, @artistyear)
 	END
--- Na základì toho, co je v tejblu, urèíme artistid
+-- Na zaklade toho, co je v tejblu, urcime artistid
 	SET @artistid = (SELECT art_id FROM artist_info WHERE art_name = @artistname AND art_country = @artistcountry)
 
--- Vyhıbáme se i pøidání duplikátu alba. Snad.
--- IDèka vytaená zhora, zbytek straightforward
+-- Vyhybame se i pridani duplkatu alba. Snad.
+-- IDcka vytazena zhora, zbytek straightforward.
 
 	IF NOT EXISTS
 		(SELECT al.alb_name, al.alb_year, ar.art_name
@@ -157,8 +155,8 @@ BEGIN
 
 	SET @albumid = (SELECT alb_id FROM album_info WHERE alb_name = @albumname AND alb_year = @albumyear AND art_id = @artistid)
 
--- Pøídání alba mezi poslechnuté
--- Pokud u tam je, updatujeme POUZE rating.
+-- Pridani alba mezi poslechnuta
+-- Pokud uz tam je, updatujeme POUZE rating.
 	IF EXISTS
 		(SELECT alb_id
 		 FROM listening_history
