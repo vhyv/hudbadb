@@ -26,6 +26,8 @@ CREATE PROCEDURE dbo.insert_albart
 AS
 BEGIN
 	
+	SET NOCOUNT ON
+
 -- Release check
 
 	IF @release NOT IN ('LP', 'EP', 'Mix', 'Comp')
@@ -61,7 +63,19 @@ BEGIN
 	DECLARE @genreid AS int
 	DECLARE @styleid AS int
 	DECLARE @artistid AS int
-	
+	DECLARE @newgenre	nvarchar(200)
+	DECLARE @newstyle	nvarchar(200)
+	DECLARE @newartist	nvarchar(200)
+	DECLARE @newalbum	nvarchar(200)
+
+	SET @newgenre = CONCAT('A new genre( ', CONVERT(nvarchar(50), @genre), ') was added.')
+
+	SET @newstyle = CONCAT('A new style( ', CONVERT(nvarchar(50), @style), ') was added.')
+
+	SET @newartist = CONCAT('A new artist( ', CONVERT(nvarchar(50), @artistname), ') was added.')
+
+	SET @newalbum = CONCAT('A new album( ', CONVERT(nvarchar(50), @albumname), ') was added.')
+
 -- Pokud neexistuji, vlozime novy zanrd nebo styl do prislusneho tejblu. 
 
 	IF NOT EXISTS (SELECT genre_name
@@ -72,7 +86,7 @@ BEGIN
 		INSERT INTO genre_info (genre_name)
 		VALUES (@genre)
 		
-		RAISERROR ('New genre was inserted.', 0, 1) WITH NOWAIT
+		RAISERROR (@newgenre, 0, 1) WITH NOWAIT
 	END
 
 	IF NOT EXISTS (SELECT style_name
@@ -83,7 +97,7 @@ BEGIN
 		INSERT INTO style_info (style_name)
 		VALUES (@style)
 
-		RAISERROR ('New style was inserted.', 0, 1) WITH NOWAIT
+		RAISERROR (@newstyle, 0, 1) WITH NOWAIT
 	END
 
 -- Pridame hodnoty ID promennym.
@@ -109,7 +123,7 @@ BEGIN
 		INSERT INTO artist_info (art_name, art_country, art_year)
 		VALUES (@artistname, @artistcountry, @artistyear)
 
-		RAISERROR ('New artist was inserted.', 0, 1) WITH NOWAIT
+		RAISERROR (@newartist, 0, 1) WITH NOWAIT
 	END
 
 	SET @artistid = (SELECT art_id
@@ -132,7 +146,7 @@ BEGIN
 		INSERT INTO album_info (alb_name, art_id, alb_year, genre_id, style_id, release)
 		VALUES (@albumname, @artistid, @albumyear, @genreid, @styleid, @release)
 
-		RAISERROR ('New album was inserted.', 0, 1) WITH NOWAIT
+		RAISERROR (@newalbum, 0, 1) WITH NOWAIT
 	END
 
 	ELSE
