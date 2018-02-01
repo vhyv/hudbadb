@@ -1,10 +1,10 @@
-/*			  Název: dbo.insert_albart
+/*			  Name: dbo.insert_albart
 
 			  Datum: 2018-01-31
       
-			  Databáze: Hudba
+			  DB: Hudba
       
-			  Úèel: Pøidání alba a umìlce (pøípadnì žánru a stylu) bez poslechu.
+			  Co: Pridani alba a umelce (pripadne zanru a stylu) bez poslechu.
 
 			  Autor: vhyv
 */
@@ -64,7 +64,7 @@ BEGIN
 	DECLARE @styleid AS int
 	DECLARE @artistid AS int
 	
--- Pokud neexistují, vložíme nový žánr nebo styl do pøísluného tejblu.
+-- Pokud neexistuji, vlozime novy zanrd nebo styl do prislusneho tejblu. 
 
 	IF NOT EXISTS (SELECT genre_name
 					FROM genre_info
@@ -84,7 +84,7 @@ BEGIN
 		VALUES (@style)
 	END
 
--- Pøidáme hodnoty ID promìnným
+-- Pridame hodnoty ID promennym.
 
 	SET @genreid = (SELECT genre_id
 					FROM genre_info
@@ -94,14 +94,14 @@ BEGIN
 					FROM style_info
 					WHERE style_name = @style)
 
--- Zkontrolujeme, jestli už existuje umìlec
+-- Zkontrolujeme, jestli uz existuje umelec.
 
 	IF NOT EXISTS (SELECT art_name, art_country 
 					FROM artist_info
 					WHERE LOWER(art_name) = LOWER(@artistname)
 					AND LOWER(art_country) = LOWER(@artistcountry))
 
--- Pokud ne, pøidáme
+-- Pokud ne, pridame.
 
 	BEGIN
 		INSERT INTO artist_info (art_name, art_country, art_year)
@@ -113,7 +113,7 @@ BEGIN
 					 WHERE art_name = @artistname
 						AND art_country = @artistcountry)
 
--- Kontrol, jestli existuje album
+-- Kontrol, jestli existuje album.
 
 	IF NOT EXISTS (SELECT al.alb_name, al.alb_year, ar.art_name
 					FROM album_info AS al
@@ -122,7 +122,7 @@ BEGIN
 					WHERE LOWER(al.alb_name) = LOWER(@albumname)
 					AND al.alb_year = @albumyear
 					AND LOWER(ar.art_name) = LOWER(@artistname))
--- Pokud ne, pøidáme
+-- Pokud ne, pridame.
 	
 	BEGIN
 		INSERT INTO album_info (alb_name, art_id, alb_year, genre_id, style_id, release)
