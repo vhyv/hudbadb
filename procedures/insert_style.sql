@@ -2,7 +2,7 @@
 			
 			Datum: 2018-02-01
 
-			Co: Vložení stylu k albu s umìlcem.
+			Co: Vlozeni stylu k albu s umelcem.
 
 			Autor: vhyv
 */
@@ -13,7 +13,7 @@ GO
 CREATE PROCEDURE dbo.insert_style
 		
 		@stylename		nvarchar(50)
-		,@artistname	nvarchar(100)
+		,@artistname		nvarchar(100)
 		,@albumname		nvarchar(100)
 
 AS
