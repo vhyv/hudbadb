@@ -2,7 +2,7 @@
 			
 			Datum: 2018-02-01
 
-			Co: VloûenÌ stylu k albu s umÏlcem.
+			Co: Vlo≈æen√≠ stylu k albu s um√¨lcem.
 
 			Autor: vhyv
 */
@@ -13,7 +13,7 @@ GO
 CREATE PROCEDURE dbo.insert_style
 		
 		@stylename		nvarchar(50)
-		,@artistname	nvarchar(100)
+		,@artistname		nvarchar(100)
 		,@albumname		nvarchar(100)
 
 AS
