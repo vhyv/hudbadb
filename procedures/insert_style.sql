@@ -1,9 +1,9 @@
 /*			Name: dbo.insert_style
 			
-			Date: 2018-02-01
+			Datum: 2018-02-01
 
-			Co: Vlozeni stylu k albu s umelcem.
-			
+			Co: Vložení stylu k albu s umìlcem.
+
 			Autor: vhyv
 */
 
@@ -39,6 +39,7 @@ BEGIN
 	BEGIN
 		INSERT INTO style_info(style_name)
 		VALUES (@stylename)
+		RAISERROR ('A new style was inserted', 0, 1) WITH NOWAIT
 	END
 	
 	SET @styleid = (SELECT style_id
@@ -62,6 +63,15 @@ BEGIN
 			ON al.art_id = ar.art_id
 		WHERE al.alb_id = @albumid
 			AND ar.art_id = @artistid
+
+		RAISERROR('The NULL style was replaced.', 0, 1) WITH NOWAIT
+	END
+
+	ELSE
+
+	BEGIN
+		RAISERROR ('The album does not need an update.', 0, 1) WITH NOWAIT
+		RETURN
 	END
 END
 ;
