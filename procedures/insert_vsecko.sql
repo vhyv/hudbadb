@@ -1,7 +1,6 @@
 /*  	Name: dbo.insert_vsetko
 	
 	DB: hudba
-
 	Co: Vlozeni noveho alba do databaze na zaklade vlozenych hodnot.
 	    Pripadne vlozeni noveho umelce/zanru/stylu 
 	    Pokud bylo slyseno, pridame i datum a rating etc. 
@@ -108,6 +107,8 @@ BEGIN
 	BEGIN	
 		INSERT INTO hudba.dbo.genre_info(genre_name)
 		VALUES (@genre)
+
+		RAISERROR ('New genre was inserted.', 0, 1) WITH NOWAIT
 	END
 
 	IF NOT EXISTS (SELECT style_name
@@ -117,6 +118,8 @@ BEGIN
 	BEGIN	
 		INSERT INTO hudba.dbo.style_info(style_name)
 		VALUES (@style)
+
+		RAISERROR ('New style was inserted.', 0, 1) WITH NOWAIT
 	END
 
 	SET @genreid = (SELECT genre_id FROM genre_info WHERE genre_name = @genre)
@@ -133,6 +136,8 @@ BEGIN
 	BEGIN
 		INSERT INTO artist_info(art_name, art_country, art_year)
 		VALUES (@artistname, @artistcountry, @artistyear)
+
+		RAISERROR ('New artist was inserted.', 0, 1) WITH NOWAIT
 	END
 -- Na zaklade toho, co je v tejblu, urcime artistid
 	SET @artistid = (SELECT art_id FROM artist_info WHERE art_name = @artistname AND art_country = @artistcountry)
@@ -151,6 +156,8 @@ BEGIN
 	BEGIN
 		INSERT INTO album_info(alb_name, art_id, alb_year, genre_id, style_id, release)
 		VALUES (@albumname, @artistid, @albumyear, @genreid, @styleid, @release)
+
+		RAISERROR ('New album was inserted.', 0, 1) WITH NOWAIT
 	END
 
 	SET @albumid = (SELECT alb_id FROM album_info WHERE alb_name = @albumname AND alb_year = @albumyear AND art_id = @artistid)
@@ -166,6 +173,8 @@ BEGIN
 		UPDATE listening_history
 		SET rating = @rating
 		WHERE alb_id = @albumid
+
+		RAISERROR ('Rating was updated.', 0, 1) WITH NOWAIT
 	END
 
 	IF NOT EXISTS
@@ -175,5 +184,14 @@ BEGIN
 	BEGIN
 		INSERT INTO listening_history(ldate, alb_id, rating, fav_song)
 		VALUES (@den, @albumid, @rating, @favs)
+
+		RAISERROR ('New listening data was inserted.', 0, 1) WITH NOWAIT
+	END
+	
+	ELSE
+
+	BEGIN
+		RAISERROR ('Nothing happened.', 0, 1) WITH NOWAIT
+		RETURN
 	END
 END;
