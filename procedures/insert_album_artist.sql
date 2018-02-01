@@ -1,11 +1,9 @@
 /*			  Name: dbo.insert_albart
-
 			  Datum: 2018-01-31
       
 			  DB: Hudba
       
 			  Co: Pridani alba a umelce (pripadne zanru a stylu) bez poslechu.
-
 			  Autor: vhyv
 */
 
@@ -73,6 +71,8 @@ BEGIN
 	BEGIN
 		INSERT INTO genre_info (genre_name)
 		VALUES (@genre)
+		
+		RAISERROR ('New genre was inserted.', 0, 1) WITH NOWAIT
 	END
 
 	IF NOT EXISTS (SELECT style_name
@@ -82,6 +82,8 @@ BEGIN
 	BEGIN
 		INSERT INTO style_info (style_name)
 		VALUES (@style)
+
+		RAISERROR ('New style was inserted.', 0, 1) WITH NOWAIT
 	END
 
 -- Pridame hodnoty ID promennym.
@@ -106,6 +108,8 @@ BEGIN
 	BEGIN
 		INSERT INTO artist_info (art_name, art_country, art_year)
 		VALUES (@artistname, @artistcountry, @artistyear)
+
+		RAISERROR ('New artist was inserted.', 0, 1) WITH NOWAIT
 	END
 
 	SET @artistid = (SELECT art_id
@@ -127,7 +131,15 @@ BEGIN
 	BEGIN
 		INSERT INTO album_info (alb_name, art_id, alb_year, genre_id, style_id, release)
 		VALUES (@albumname, @artistid, @albumyear, @genreid, @styleid, @release)
+
+		RAISERROR ('New album was inserted.', 0, 1) WITH NOWAIT
+	END
+
+	ELSE
+
+	BEGIN
+		RAISERROR ('Nothing happened.', 0, 1) WITH NOWAIT
+		RETURN
 	END
 END
 ;
-						
