@@ -108,10 +108,10 @@ BEGIN
 
 	SET @newalbum = CONCAT('A new album( ', CONVERT(nvarchar(100), @albumname), ') was added.')
 
-	SET @newrating = CONCAT('The rating of ', CONVERT(nvarchar(100), @albumname), ' by ', CONVERT(nvarchar(100), @artistname), 'was updated to ',
+	SET @newrating = CONCAT('The rating of ', CONVERT(nvarchar(100), @albumname), ' by ', CONVERT(nvarchar(100), @artistname), ' was updated to ',
 							CONVERT(nvarchar(50), @rating), '/10.')
 
-	SET @newdata = CONCAT('New listening data for ', CONVERT(nvarchar(100), @albumname), ' by ', CONVERT(nvarchar(100), @artistname), 'was inserted.')
+	SET @newdata = CONCAT('New listening data for ', CONVERT(nvarchar(100), @albumname), ' by ', CONVERT(nvarchar(100), @artistname), ' was inserted.')
 
 
 -- Datum poslechu je dnesek, protoze proc ne.
